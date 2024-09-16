@@ -11,8 +11,18 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 
 import MenuButton from './MenuButton';
 import MenuContent from './MenuContent';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 function SideMenuMobile({ open, toggleDrawer }) {
+  const navigate = useNavigate()
+  const { user } = useUser();
+
+  const handleLogout = () => {
+    //you can perform logout logic here (e.g., clearing user data, tokens etc)
+    navigate('/landing-page')
+  }
+
   return (
     <Drawer
       anchor="right"
@@ -42,7 +52,7 @@ function SideMenuMobile({ open, toggleDrawer }) {
               src="../assets/avatar/avatar1.jpg"
               sx={{ width: 24, height: 24 }}
              />
-            <Typography component="p" variant="h6">Riley Carter</Typography>
+            <Typography component="p" variant="h6">{user.name}</Typography>
           </Stack>
 
           <MenuButton showBadge>
@@ -58,7 +68,7 @@ function SideMenuMobile({ open, toggleDrawer }) {
         </Stack>
 
         <Stack sx={{ p: 2 }}>
-          <Button variant="outlined" fullwidth startIcon={<LogoutRoundedIcon />}>Logout</Button>
+          <Button onClick={handleLogout} variant="outlined" fullwidth startIcon={<LogoutRoundedIcon />}>Logout</Button>
         </Stack>
 
       </Stack>

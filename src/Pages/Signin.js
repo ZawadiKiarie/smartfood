@@ -18,6 +18,8 @@ import { GoogleIcon, CustomIcon } from '../Components/CustomIcon';
 import TemplateFrame from '../Components/TemplateFrame';
 import ForgotPassword from '../Components/ForgotPassword';
 import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -60,56 +62,52 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 function SignIn() {
   const [mode, setMode] = React.useState('light');
   const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [open, setOpen] = React.useState(false);
-    const [showCustomTheme, setShowCustomTheme] = React.useState(true);
-    const defaultTheme = createTheme({ palette: {mode} })
+  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+  const [showCustomTheme, setShowCustomTheme] = React.useState(true);
+  const defaultTheme = createTheme({ palette: {mode} })
   const SignUpTheme = createTheme(getSignUpTheme(mode));
+  const [signInErrorMsg, setSignInErrorMsg] = React.useState('');
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    }
+  const { loadUser } = useUser()
 
-    const handleClose = () => {
-      setOpen(false);
-    }
+  const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      console.log({
-        email: data.get('email'),
-        password: data.get('password'),
-      });
-    }
-    
-    const validateInputs = () => {
-      const email = document.getElementById('email');
-      const password = document.getElementById('password');
-  
-      let isValid = true;
-  
-      if(!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-        setEmailError(true);
-        setEmailErrorMessage('Please enter a valid email address');
-        isValid = false;
-      } else {
-        setEmailError(false)
-        setEmailErrorMessage('')
-      }
-  
-      if(!password.value || password.value.length < 6) {
-        setPasswordError(true);
-        setPasswordErrorMessage('Password must be at least 6 characters long');
-        isValid = false
-      }else {
-        setPasswordError(false);
-        setPasswordErrorMessage('');
-      }
-      return isValid;
-    }
+  const handleClickOpen = () => {
+    setOpen(true);
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const signInEmail = event.target.email.value;
+    const signInPassword = event.target.password.value;
+
+    fetch('http://localhost:3000/signin', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: signInEmail,
+        password: signInPassword
+      })
+    })
+      .then(resp => resp.json())
+      .then(user => {
+        if(user.id) {
+          loadUser(user)
+          navigate('/');
+        }else {
+          setSignInErrorMsg(user)
+      }})
+      .catch(err => {
+        console.error('Error signing up:', err);
+      })
+  }
 
   return(
     <ThemeProvider theme={showCustomTheme ? SignUpTheme: defaultTheme}>
@@ -124,6 +122,14 @@ function SignIn() {
             >
               Sign in
             </Typography>
+            {signInErrorMsg && (
+              <Typography
+                color="error"
+                sx={{ fontSize: '0.875rem', textAlign: 'center' }}
+              >
+                {signInErrorMsg}
+              </Typography>
+            )}
             <Box
               component="form"
               onSubmit={handleSubmit}
@@ -152,7 +158,10 @@ function SignIn() {
                   <FormLabel htmlFor="password">Password</FormLabel>
                   <Link
                     component="button"
-                    onClick={handleClickOpen}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleClickOpen();
+                    }}
                     variant="body2"
                     sx={{ alignSelf: 'baseline' }}
                   >
@@ -183,7 +192,6 @@ function SignIn() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                onClick={validateInputs}
                >Sign in</Button>
                <Typography sx={{ textAlign: 'center' }}>
                   Don&apos;t have an account?{' '}

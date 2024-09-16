@@ -13,13 +13,6 @@ function ForgotPassword({ open, handleClose }) {
     <Dialog
       open={open}
       onClose={handleClose}
-      PaperProps={{
-        component: 'form',
-        onSubmit: (event) => {
-          event.preventDefault();
-          handleClose()
-        }
-      }}
     >
       <DialogTitle>Reset password</DialogTitle>
       <DialogContent
@@ -47,7 +40,7 @@ function ForgotPassword({ open, handleClose }) {
       </DialogContent>
       <DialogActions sx={{ pb: 3, px: 3 }}>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button variant='contained' type="submit">Continue</Button>
+        <Button variant='contained'>Continue</Button>
       </DialogActions>
     </Dialog>
   )

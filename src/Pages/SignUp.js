@@ -17,6 +17,8 @@ import getSignUpTheme from '../theme/getSignUpTheme';
 import { GoogleIcon, CustomIcon } from '../Components/CustomIcon';
 import TemplateFrame from '../Components/TemplateFrame';
 import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -67,6 +69,10 @@ function SignUp(){
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [signUpErrorMsg, setSignUpErrorMsg] = React.useState('');
+
+  const navigate = useNavigate();
+  const { loadUser } = useUser();
 
   React.useEffect(() => {
     // Check if there is a preferred mode in localStorage
@@ -96,7 +102,6 @@ function SignUp(){
     const email = document.getElementById('email');
     const password = document.getElementById('password');
     const name = document.getElementById('name');
-
     let isValid = true;
 
     if(!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
@@ -111,7 +116,7 @@ function SignUp(){
     if(!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage('Password must be at least 6 characters long');
-      isValid = false
+      isValid = false;
     }else {
       setPasswordError(false);
       setPasswordErrorMessage('');
@@ -132,12 +137,29 @@ function SignUp(){
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const name = data.get('name');
+    const email = data.get('email');
+    const password = data.get('password');
+
+    if(validateInputs()){
+      fetch('http://localhost:3000/signup', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, email, password})
+      })
+        .then(resp => resp.json())
+        .then(user =>{
+          if(user.id){
+            loadUser(user);
+            navigate('/');
+          }else{
+            setSignUpErrorMsg(user);
+        }})
+        .catch(err => {
+          console.error('Error signing up:', err);
+        })
+    }
+
   }
 
   return(
@@ -153,6 +175,14 @@ function SignUp(){
             >
               Sign up
             </Typography>
+            {signUpErrorMsg && (
+              <Typography
+                color="error"
+                sx={{ fontSize: '0.875rem', textAlign: 'center' }}
+              >
+                {signUpErrorMsg}
+              </Typography>
+            )}
             <Box
               component="form"
               onSubmit={handleSubmit}
