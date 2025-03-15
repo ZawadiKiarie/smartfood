@@ -1,277 +1,301 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-import getSignUpTheme from '../theme/getSignUpTheme';
-import { GoogleIcon, CustomIcon } from '../Components/CustomIcon';
-import TemplateFrame from '../Components/TemplateFrame';
-import { Link as RouterLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import FormControl from "@mui/material/FormControl";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import MuiCard from "@mui/material/Card";
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import getSignUpTheme from "../theme/getSignUpTheme";
+import { GoogleIcon, CustomIcon } from "../Components/CustomIcon";
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+import { Token } from "@mui/icons-material";
 
 const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
+  display: "flex",
+  flexDirection: "column",
+  alignSelf: "center",
+  width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  margin: 'auto',
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '450px',
+  margin: "auto",
+  [theme.breakpoints.up("sm")]: {
+    maxWidth: "450px",
   },
   boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  ...theme.applyStyles('dark', {
+    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  ...theme.applyStyles("dark", {
     boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
   padding: 20,
-  marginTop: '10vh',
-  '&::before': {
+  marginTop: "10vh",
+  "&::before": {
     content: '""',
-    display: 'block',
-    position: 'absolute',
+    display: "block",
+    position: "absolute",
     zIndex: -1,
     inset: 0,
     backgroundImage:
-      'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-    backgroundRepeat: 'no-repeat',
-    ...theme.applyStyles('dark', {
+      "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
+    backgroundRepeat: "no-repeat",
+    ...theme.applyStyles("dark", {
       backgroundImage:
-        'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+        "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
     }),
   },
 }));
 
-function SignUp(){
-  const [mode, setMode] = React.useState('light');
+function SignUp() {
+  const [mode, setMode] = React.useState("light");
   const [showCustomTheme, setShowCustomTheme] = React.useState(true);
-  const defaultTheme = createTheme({ palette: {mode} })
-  const SignUpTheme = createTheme(getSignUpTheme(mode))
+  const defaultTheme = createTheme({ palette: { mode } });
+  const SignUpTheme = createTheme(getSignUpTheme(mode));
+
   const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
+  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState('');
-  const [signUpErrorMsg, setSignUpErrorMsg] = React.useState('');
+  const [nameErrorMessage, setNameErrorMessage] = React.useState("");
+  const [signUpErrorMsg, setSignUpErrorMsg] = React.useState("");
 
   const navigate = useNavigate();
   const { loadUser } = useUser();
 
   React.useEffect(() => {
     // Check if there is a preferred mode in localStorage
-    const savedMode = localStorage.getItem('themeMode');
-    if (savedMode) {
-      setMode(savedMode);
-    } else {
-      // If no preference is found, it uses system preference
-      const systemPrefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches;
-      setMode(systemPrefersDark ? 'dark' : 'light');
-    }
+    // const savedMode = localStorage.getItem('themeMode');
+    // if (savedMode) {
+    //   setMode(savedMode);
+    // } else {
+    //   // If no preference is found, it uses system preference
+    //   const systemPrefersDark = window.matchMedia(
+    //     '(prefers-color-scheme: dark)',
+    //   ).matches;
+    //   setMode(systemPrefersDark ? 'dark' : 'light');
+    // }
+    setMode("light");
   }, []);
 
-  const toggleColorMode = () => {
-    const newMode = mode === 'dark' ? 'light' : 'dark';
-    setMode(newMode);
-    localStorage.setItem('themeMode', newMode); // Save the selected mode to localStorage
-  };
+  // const toggleColorMode = () => {
+  //   const newMode = mode === 'dark' ? 'light' : 'dark';
+  //   setMode(newMode);
+  //   localStorage.setItem('themeMode', newMode); // Save the selected mode to localStorage
+  // };
 
-  const toggleCustomTheme = () => {
-    setShowCustomTheme((prev) => !prev);
-  };
+  // const toggleCustomTheme = () => {
+  //   setShowCustomTheme((prev) => !prev);
+  // };
 
   const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    const name = document.getElementById('name');
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const name = document.getElementById("name");
     let isValid = true;
 
-    if(!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address');
+      setEmailErrorMessage("Please enter a valid email address");
       isValid = false;
     } else {
-      setEmailError(false)
-      setEmailErrorMessage('')
+      setEmailError(false);
+      setEmailErrorMessage("");
     }
 
-    if(!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long');
+      setPasswordErrorMessage("Password must be at least 6 characters long");
       isValid = false;
-    }else {
+    } else {
       setPasswordError(false);
-      setPasswordErrorMessage('');
+      setPasswordErrorMessage("");
     }
 
-    if(!name.value || name.value.length < 1) {
+    if (!name.value || name.value.length < 1) {
       setNameError(true);
-      setNameErrorMessage('Name is required');
+      setNameErrorMessage("Name is required");
       isValid = false;
     } else {
       setNameError(false);
-      setNameErrorMessage('');
+      setNameErrorMessage("");
     }
 
     return isValid;
-  }
+  };
+
+  const saveAuthTokenInSession = (token) => {
+    window.sessionStorage.setItem("token", token);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const name = data.get('name');
-    const email = data.get('email');
-    const password = data.get('password');
+    const name = data.get("name");
+    const email = data.get("email");
+    const password = data.get("password");
 
-    if(validateInputs()){
-      fetch('http://localhost:3000/signup', {
-        method: 'post',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name, email, password})
+    if (validateInputs()) {
+      fetch("http://localhost:3000/signup", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
       })
-        .then(resp => resp.json())
-        .then(user =>{
-          if(user.id){
-            loadUser(user);
-            navigate('/');
-          }else{
-            setSignUpErrorMsg(user);
-        }})
-        .catch(err => {
-          console.error('Error signing up:', err);
+        .then((resp) => resp.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success === "true" && data.userId) {
+            saveAuthTokenInSession(data.token);
+            fetch(`http://localhost:3000/profile/${data.userId}`, {
+              method: "get",
+              headers: {
+                "content-Type": "application/json",
+                Authorization: data.token,
+              },
+            })
+              .then((resp) => resp.json())
+              .then((user) => {
+                if (user && user.email) {
+                  loadUser(user);
+                  navigate("/");
+                } else {
+                  setSignUpErrorMsg(user);
+                }
+              });
+          } else {
+            setSignUpErrorMsg("Invalid Signup");
+          }
         })
+        .catch((err) => {
+          console.error("Error signing up:", err);
+        });
     }
+  };
 
-  }
-
-  return(
-    <ThemeProvider theme={showCustomTheme ? SignUpTheme: defaultTheme}>
+  return (
+    <ThemeProvider theme={showCustomTheme ? SignUpTheme : defaultTheme}>
       <CssBaseline enableColorScheme />
       <SignUpContainer direction="column" justifyContent="space-between">
-          <Card variant="outlined">
-            <CustomIcon />
+        <Card variant="outlined">
+          <CustomIcon />
+          <Typography
+            component="h1"
+            variant="h4"
+            sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
+          >
+            Sign up
+          </Typography>
+          {signUpErrorMsg && (
             <Typography
-              component="h1"
-              variant="h4"
-              sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+              color="error"
+              sx={{ fontSize: "0.875rem", textAlign: "center" }}
+            >
+              {signUpErrorMsg}
+            </Typography>
+          )}
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          >
+            <FormControl>
+              <FormLabel htmlFor="name">Full name</FormLabel>
+              <TextField
+                autoComplete="name"
+                name="name"
+                required
+                fullWidth
+                id="name"
+                placeholder="Jon Snow"
+                error={nameError}
+                helperText={nameErrorMessage}
+                color={nameError ? "error" : "primary"}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="email">Email</FormLabel>
+              <TextField
+                autoComplete="email"
+                name="email"
+                required
+                fullWidth
+                id="email"
+                placeholder="you@email.com"
+                error={emailError}
+                helperText={emailErrorMessage}
+                color={emailError ? "error" : "primary"}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="password">Password</FormLabel>
+              <TextField
+                autoComplete="new-password"
+                name="password"
+                required
+                fullWidth
+                id="password"
+                placeholder="••••••"
+                error={passwordError}
+                helperText={passwordErrorMessage}
+                color={passwordError ? "error" : "primary"}
+              />
+            </FormControl>
+            <FormControlLabel
+              control={<Checkbox value="allowExtraEmails" color="primary" />}
+              label="I want to receive updates via email"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              onClick={validateInputs}
             >
               Sign up
+            </Button>
+            <Typography sx={{ textAlign: "center" }}>
+              Already have an account?{" "}
+              <span>
+                <Link
+                  component={RouterLink}
+                  to="/signin"
+                  variant="body2"
+                  sx={{ alignSelf: "center" }}
+                >
+                  Sign in
+                </Link>
+              </span>
             </Typography>
-            {signUpErrorMsg && (
-              <Typography
-                color="error"
-                sx={{ fontSize: '0.875rem', textAlign: 'center' }}
-              >
-                {signUpErrorMsg}
-              </Typography>
-            )}
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+          </Box>
+          <Divider>
+            <Typography sx={{ color: "text.secondary" }}>or</Typography>
+          </Divider>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="outlined"
+              onClick={() => alert("Sign up with Google")}
+              startIcon={<GoogleIcon />}
             >
-              <FormControl>
-                <FormLabel htmlFor="name">Full name</FormLabel>
-                <TextField
-                  autoComplete="name"
-                  name="name"
-                  required
-                  fullWidth
-                  id="name"
-                  placeholder='Jon Snow'
-                  error={nameError}
-                  helperText={nameErrorMessage}
-                  color={nameError ? 'error': 'primary'}
-                 />
-              </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <TextField
-                  autoComplete="email"
-                  name="email"
-                  required
-                  fullWidth
-                  id="email"
-                  placeholder='you@email.com'
-                  error={emailError}
-                  helperText={emailErrorMessage}
-                  color={emailError ? 'error': 'primary'}
-                 />
-              </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="password">Password</FormLabel>
-                <TextField
-                  autoComplete="new-password"
-                  name="password"
-                  required
-                  fullWidth
-                  id="password"
-                  placeholder='••••••'
-                  error={passwordError}
-                  helperText={passwordErrorMessage}
-                  color={passwordError ? 'error': 'primary'}
-                 />
-              </FormControl>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive updates via email"
-               />
-               <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                onClick={validateInputs}
-               >Sign up</Button>
-               <Typography sx={{ textAlign: 'center' }}>
-                  Already have an account?{' '}
-                  <span>
-                    <Link
-                    component={RouterLink}
-                      to="/signin"
-                      variant="body2"
-                      sx={{ alignSelf: 'center' }}
-                    >
-                      Sign in
-                    </Link>
-                  </span>
-               </Typography>
-            </Box>
-            <Divider>
-              <Typography sx={{ color: 'text.secondary' }}>or</Typography>
-            </Divider>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="outlined"
-                onClick={() => alert('Sign up with Google')}
-                startIcon={<GoogleIcon />}
-              >
-                Sign up with Google
-              </Button>
-            </Box>
-          </Card>
+              Sign up with Google
+            </Button>
+          </Box>
+        </Card>
       </SignUpContainer>
     </ThemeProvider>
-  )
+  );
 }
 
 export default SignUp;

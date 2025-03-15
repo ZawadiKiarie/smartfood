@@ -1,20 +1,20 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Divider, { dividerClasses } from '@mui/material/Divider';
-import Menu from '@mui/material/Menu';
-import MuiMenuItem from '@mui/material/MenuItem';
-import { paperClasses } from '@mui/material/Paper';
-import { listClasses } from '@mui/material/List';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
-import MenuButton from './MenuButton';
-import { useNavigate } from 'react-router-dom';
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+import Divider, { dividerClasses } from "@mui/material/Divider";
+import Menu from "@mui/material/Menu";
+import MuiMenuItem from "@mui/material/MenuItem";
+import { paperClasses } from "@mui/material/Paper";
+import { listClasses } from "@mui/material/List";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon, { listItemIconClasses } from "@mui/material/ListItemIcon";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
+import MenuButton from "./MenuButton";
+import { useNavigate } from "react-router-dom";
 
 const MenuItem = styled(MuiMenuItem)({
-  margin: '2px 0',
-})
+  margin: "2px 0",
+});
 
 function OptionsMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -25,19 +25,32 @@ function OptionsMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     //you can perform logout logic here (e.g., clearing user data, tokens etc)
-    navigate('/landing-page')
-  }
+    fetch("http://localhost:3000/signout", {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: window.sessionStorage.getItem("token"),
+      },
+    })
+      .then((resp) => resp.json())
+      .then((resp) => {
+        if (resp === "success") {
+          window.sessionStorage.removeItem("token");
+          navigate("/landing-page");
+        }
+      });
+  };
 
   return (
     <React.Fragment>
       <MenuButton
         aria-label="Open menu"
         onClick={handleClick}
-        sx={{ borderColor: 'transparent' }}
+        sx={{ borderColor: "transparent" }}
       >
         <MoreVertRoundedIcon />
       </MenuButton>
@@ -47,17 +60,17 @@ function OptionsMenu() {
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         sx={{
           [`& .${listClasses.root}`]: {
-            padding: '4px',
+            padding: "4px",
           },
           [`& .${paperClasses.root}`]: {
             padding: 0,
           },
           [`& .${dividerClasses.root}`]: {
-            margin: '4px -4px',
+            margin: "4px -4px",
           },
         }}
       >
@@ -65,11 +78,11 @@ function OptionsMenu() {
         <MenuItem onClick={handleClose}>My Account</MenuItem>
         <MenuItem onClick={handleClose}>Settings</MenuItem>
         <Divider />
-        <MenuItem 
+        <MenuItem
           onClick={handleLogout}
           sx={{
             [`& .${listItemIconClasses.root}`]: {
-              ml: 'auto',
+              ml: "auto",
               minWidth: 0,
             },
           }}
@@ -81,8 +94,7 @@ function OptionsMenu() {
         </MenuItem>
       </Menu>
     </React.Fragment>
-  )
-
+  );
 }
 
-export default OptionsMenu
+export default OptionsMenu;
