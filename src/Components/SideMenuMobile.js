@@ -20,7 +20,7 @@ function SideMenuMobile({ open, toggleDrawer }) {
 
   const handleLogout = () => {
     //you can perform logout logic here (e.g., clearing user data, tokens etc)
-    fetch("http://localhost:3000/signout", {
+    fetch("https://smartfood-api.onrender.com/signout", {
       method: "get",
       headers: {
         "Content-Type": "application/json",

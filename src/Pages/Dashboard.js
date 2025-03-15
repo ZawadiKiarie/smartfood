@@ -22,7 +22,7 @@ function Dashboard() {
   const handleReload = React.useCallback(() => {
     const token = window.sessionStorage.getItem("token");
     if (token) {
-      fetch("http://localhost:3000/signin", {
+      fetch("https://smartfood-api.onrender.com/signin", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -32,7 +32,7 @@ function Dashboard() {
         .then((resp) => resp.json())
         .then((data) => {
           if (data && data.id) {
-            fetch(`http://localhost:3000/profile/${data.id}`, {
+            fetch(`https://smartfood-api.onrender.com/profile/${data.id}`, {
               method: "get",
               headers: {
                 "Content-Type": "application/json",

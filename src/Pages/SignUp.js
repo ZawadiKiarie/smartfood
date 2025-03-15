@@ -148,7 +148,7 @@ function SignUp() {
     const password = data.get("password");
 
     if (validateInputs()) {
-      fetch("http://localhost:3000/signup", {
+      fetch("https://smartfood-api.onrender.com/signup", {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -158,7 +158,7 @@ function SignUp() {
           console.log(data);
           if (data.success === "true" && data.userId) {
             saveAuthTokenInSession(data.token);
-            fetch(`http://localhost:3000/profile/${data.userId}`, {
+            fetch(`https://smartfood-api.onrender.com/profile/${data.userId}`, {
               method: "get",
               headers: {
                 "content-Type": "application/json",
