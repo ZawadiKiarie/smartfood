@@ -43,7 +43,7 @@ function Dashboard() {
               .then((user) => {
                 if (user && user.email) {
                   loadUser(user);
-                  navigate("/");
+                  navigate("/dashboard");
                 }
               });
           }

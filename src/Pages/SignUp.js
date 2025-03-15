@@ -169,7 +169,7 @@ function SignUp() {
               .then((user) => {
                 if (user && user.email) {
                   loadUser(user);
-                  navigate("/");
+                  navigate("/dashboard");
                 } else {
                   setSignUpErrorMsg(user);
                 }

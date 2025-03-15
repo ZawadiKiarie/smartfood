@@ -40,7 +40,7 @@ function OptionsMenu() {
       .then((resp) => {
         if (resp === "success") {
           window.sessionStorage.removeItem("token");
-          navigate("/landing-page");
+          navigate("/");
         }
       });
   };

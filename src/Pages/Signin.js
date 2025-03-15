@@ -115,7 +115,7 @@ function SignIn() {
             .then((user) => {
               if (user && user.email) {
                 loadUser(user);
-                navigate("/");
+                navigate("/dashboard");
               } else {
                 setSignInErrorMsg(user);
               }
