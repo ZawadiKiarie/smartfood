@@ -1,45 +1,44 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { styled } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import { useDropzone } from 'react-dropzone';
-import Fab from '@mui/material/Fab';
-import CheckIcon from '@mui/icons-material/Check';
-import SaveIcon from '@mui/icons-material/Save';
-import { CircularProgress } from '@mui/material';
-import { green } from '@mui/material/colors';
-import axios from 'axios';
+import * as React from "react";
+import PropTypes from "prop-types";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import { useDropzone } from "react-dropzone";
+import Fab from "@mui/material/Fab";
+import CheckIcon from "@mui/icons-material/Check";
+import SaveIcon from "@mui/icons-material/Save";
+import { CircularProgress } from "@mui/material";
+import { green } from "@mui/material/colors";
+import axios from "axios";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
+  "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
-  '& .MuiDialogActions-root': {
+  "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
 }));
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
-function UploadDialog({ onClose, open }){
-
+function UploadDialog({ onClose, open }) {
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef(undefined);
@@ -49,7 +48,7 @@ function UploadDialog({ onClose, open }){
   const buttonSx = {
     ...(success && {
       bgcolor: green[500],
-      '&:hover': {
+      "&:hover": {
         bgcolor: green[700],
       },
     }),
@@ -63,27 +62,31 @@ function UploadDialog({ onClose, open }){
 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
-    setUploadedImage(file)
+    setUploadedImage(file);
     handleUpload(file);
-  }
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleUpload = async(file) => {
-    if(!loading) {
+  const handleUpload = async (file) => {
+    if (!loading) {
       setLoading(true);
       setSuccess(false);
     }
     const formData = new FormData();
-    formData.append('image', file)
+    formData.append("image", file);
     try {
-      const segmentationResults = await axios.post('http://localhost:3000/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const segmentationResults = await axios.post(
+        "https://smartfood-api.onrender.com/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log(segmentationResults);
-      setResults(segmentationResults.data.results)
+      setResults(segmentationResults.data.results);
       setLoading(false);
       setSuccess(true);
       setTimeout(() => {
@@ -91,38 +94,40 @@ function UploadDialog({ onClose, open }){
         setTimeout(() => {
           setSuccess(false); // Reset the checkmark after the dialog closes
         }, 100);
-      }, 1000)
-    }catch(error) {
+      }, 1000);
+    } catch (error) {
       console.error("Error running segmentation model:", error);
       setLoading(false);
       setSuccess(false);
     }
-  }
+  };
 
-  return(
+  return (
     <BootstrapDialog
       fullWidth={true}
       maxWidth={false}
       onClose={onClose}
       open={open}
       sx={{
-        '& .MuiDialog-paper': {
+        "& .MuiDialog-paper": {
           width: {
-            xs: '100%',  // Full width on extra small screens
-            sm: '100%',  // Full width on small screens
-            md: '100%',  // Full width on medium screens
-            lg: '60%',   // Medium-sized dialog on large screens
+            xs: "100%", // Full width on extra small screens
+            sm: "100%", // Full width on small screens
+            md: "100%", // Full width on medium screens
+            lg: "60%", // Medium-sized dialog on large screens
           },
-          maxWidth: 'none', // Remove default maxWidth behavior for responsive control
+          maxWidth: "none", // Remove default maxWidth behavior for responsive control
         },
       }}
     >
-      <DialogTitle sx={{ m:0, p:2 }} id="customized-dialog-title">Upload a Food Image</DialogTitle>
+      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+        Upload a Food Image
+      </DialogTitle>
       <IconButton
         aria-label="close"
         onClick={onClose}
         sx={(theme) => ({
-          position: 'absolute',
+          position: "absolute",
           right: 8,
           top: 8,
           color: theme.palette.grey[500],
@@ -130,8 +135,7 @@ function UploadDialog({ onClose, open }){
       >
         <CloseIcon />
       </IconButton>
-      <DialogContent dividers
-      >
+      <DialogContent dividers>
         {/* <Button
           component="label"
           role={undefined}
@@ -145,13 +149,9 @@ function UploadDialog({ onClose, open }){
           multiple
          />
         </Button> */}
-        <Box sx={{ display: 'flex', alignItems: 'center'}}>
-          <Box sx={{ m: 1, position: 'relative' }}>
-            <Fab
-              aria-label="save"
-              color="primary"
-              sx={buttonSx}
-            >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ m: 1, position: "relative" }}>
+            <Fab aria-label="save" color="primary" sx={buttonSx}>
               {success ? <CheckIcon /> : <SaveIcon />}
             </Fab>
             {loading && (
@@ -159,7 +159,7 @@ function UploadDialog({ onClose, open }){
                 size={68}
                 sx={{
                   color: green[500],
-                  position: 'absolute',
+                  position: "absolute",
                   top: -6,
                   left: -6,
                   zIndex: 1,
@@ -167,15 +167,13 @@ function UploadDialog({ onClose, open }){
               />
             )}
           </Box>
-          <Box
-            sx={{ m: 1, position: 'relative' }}
-          >
+          <Box sx={{ m: 1, position: "relative" }}>
             <Button
               component="label"
               role={undefined}
               tabIndex={-1}
               variant="contained"
-              sx={{buttonSx}}
+              sx={{ buttonSx }}
               disabled={loading}
             >
               Upload an Image
@@ -193,38 +191,46 @@ function UploadDialog({ onClose, open }){
                 size={24}
                 sx={{
                   color: green[500],
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  marginTop: '-12px',
-                  marginLeft: '-12px',
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
                 }}
-               />
+              />
             )}
           </Box>
         </Box>
-        
-        
+
         <Typography variant="h6">or drag and drop images</Typography>
 
         {/* Dropzone */}
-        <div {...getRootProps({ style: { border: '2px dashed gray', padding: '20px', textAlign: 'center', marginTop: '10px', cursor: 'pointer' } })}>
+        <div
+          {...getRootProps({
+            style: {
+              border: "2px dashed gray",
+              padding: "20px",
+              textAlign: "center",
+              marginTop: "10px",
+              cursor: "pointer",
+            },
+          })}
+        >
           <input {...getInputProps()} />
-          {
-            isDragActive ?
-              <p>Drop the files here ...</p> :
-              <p>Drag 'n' drop some files here, or click to select files</p>
-          }
+          {isDragActive ? (
+            <p>Drop the files here ...</p>
+          ) : (
+            <p>Drag 'n' drop some files here, or click to select files</p>
+          )}
         </div>
       </DialogContent>
     </BootstrapDialog>
-
-  )
+  );
 }
 
 UploadDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-}
+};
 
 export default UploadDialog;
